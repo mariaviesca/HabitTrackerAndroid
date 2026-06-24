@@ -52,87 +52,117 @@ fun ScoreDetailScreen(store: HabitStore, onDone: () -> Unit) {
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             // Big score display
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(store.scoreColor.copy(alpha = 0.15f))
+            Surface(
+                shape = RoundedCornerShape(24.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    store.scoreGrade,
-                    fontSize = 44.sp,
-                    fontWeight = FontWeight.Black,
-                    color = store.scoreColor
-                )
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(110.dp)
+                            .clip(CircleShape)
+                            .background(store.scoreColor.copy(alpha = 0.15f))
+                    ) {
+                        Text(
+                            store.scoreGrade,
+                            fontSize = 48.sp,
+                            fontWeight = FontWeight.Black,
+                            color = store.scoreColor
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        "${store.habitScore} points",
+                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                        color = store.scoreColor
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        gradeDescription,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
-            Text(
-                "${store.habitScore} points",
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                color = store.scoreColor
-            )
-            Text(
-                gradeDescription,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
 
             // Grade scale
             GradeScale(store.habitScore)
 
             // How points work
             Surface(
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(18.dp),
                 color = MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("How points work", style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        "How points work",
+                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
                     RuleRow(Icons.Default.CheckCircle, Color(0xFF34C759), "+1 point", "Every time you check off a habit")
-                    HorizontalDivider(modifier = Modifier.padding(start = 56.dp))
+                    HorizontalDivider(modifier = Modifier.padding(start = 48.dp, top = 4.dp, bottom = 4.dp), color = MaterialTheme.colorScheme.surfaceContainerHighest)
                     RuleRow(Icons.Default.Close, Color(0xFFFF9500), "−1 point", "If you undo a check-off")
-                    HorizontalDivider(modifier = Modifier.padding(start = 56.dp))
-                    RuleRow(Icons.Default.Warning, Color.Red, "−15 / −25 / −40 points", "When a weekly habit goal is missed — penalty escalates each consecutive missed week")
+                    HorizontalDivider(modifier = Modifier.padding(start = 48.dp, top = 4.dp, bottom = 4.dp), color = MaterialTheme.colorScheme.surfaceContainerHighest)
+                    RuleRow(Icons.Default.Warning, Color.Red, "−15 / −25 / −40 pts", "Missed weekly goal — escalates for consecutive misses")
                 }
             }
 
             // Penalty explanation
             Surface(
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(18.dp),
                 color = Color.Red.copy(alpha = 0.06f),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, Color.Red.copy(alpha = 0.2f), RoundedCornerShape(14.dp))
+                    .border(1.dp, Color.Red.copy(alpha = 0.2f), RoundedCornerShape(18.dp))
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("About the missed-week penalty", style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        "About the missed-week penalty",
+                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
                     PenaltyStep("1", "You set a habit to repeat X times per week — for example the gym 4× a week.")
+                    Spacer(modifier = Modifier.height(8.dp))
                     PenaltyStep("2", "Every Monday, the app checks if you hit your goal the week before.")
-                    PenaltyStep("3", "If you fell short — even by just one session — 15 points are deducted. Miss the same habit two weeks in a row and it costs 25, three or more in a row costs 40.")
-                    PenaltyStep("4", "Daily habits don't trigger this penalty. They only affect your streak — and streak freezes (earned at 20, 50, then every 40 streak days) auto-cover a missed day.")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    PenaltyStep("3", "If you fell short — even by just one session — 15 points are deducted. Miss two weeks in a row: 25. Three or more: 40.")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    PenaltyStep("4", "Daily habits don't trigger this penalty. They only affect your streak — and streak freezes auto-cover a missed day.")
                 }
             }
 
             // Missed weeks
             if (store.missedWeeks.isNotEmpty()) {
                 Surface(
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(18.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text("Penalties this session (${store.missedWeeks.size})", style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        store.missedWeeks.forEach { missed ->
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(missed.habitIcon, fontSize = 24.sp)
+                        Text(
+                            "Penalties (${store.missedWeeks.size})",
+                            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        store.missedWeeks.forEachIndexed { index, missed ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(missed.habitIcon, fontSize = 28.sp)
                                 Spacer(modifier = Modifier.width(14.dp))
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(missed.habitName, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium))
@@ -142,7 +172,17 @@ fun ScoreDetailScreen(store: HabitStore, onDone: () -> Unit) {
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
-                                Text("−${missed.points}", style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold), color = Color.Red)
+                                Text(
+                                    "−${missed.points}",
+                                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                                    color = Color.Red
+                                )
+                            }
+                            if (index < store.missedWeeks.size - 1) {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(start = 48.dp, top = 8.dp, bottom = 8.dp),
+                                    color = MaterialTheme.colorScheme.surfaceContainerHighest
+                                )
                             }
                         }
                     }
@@ -152,15 +192,19 @@ fun ScoreDetailScreen(store: HabitStore, onDone: () -> Unit) {
             // Stats
             val totalCheckIns = store.habits.flatMap { it.entries }.count { it.completed }
             Surface(
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(18.dp),
                 color = MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Your stats", style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row {
-                        MiniStat("$totalCheckIns", "Total check-ins", Color(0xFF34C759), Modifier.weight(1f))
+                    Text(
+                        "Your stats",
+                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        MiniStat("$totalCheckIns", "Total\ncheck-ins", Color(0xFF34C759), Modifier.weight(1f))
                         MiniStat("${store.missedWeeks.size}", "Penalties", Color.Red, Modifier.weight(1f))
                         MiniStat("${store.habits.size}", "Habits", Color(0xFF007AFF), Modifier.weight(1f))
                     }
@@ -193,14 +237,20 @@ private fun GradeScale(currentScore: Int) {
     }
 
     Surface(
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(18.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
-            Text("Grade Scale", style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold))
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                "Grade Scale",
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
                 grades.forEach { (grade, threshold, color) ->
                     val isCurrent = isCurrentGrade(grade)
                     Column(
@@ -211,20 +261,27 @@ private fun GradeScale(currentScore: Int) {
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(36.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(color.copy(alpha = if (isCurrent) 0.25f else 0.1f))
+                                .height(40.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(color.copy(alpha = if (isCurrent) 0.3f else 0.08f))
                                 .then(
-                                    if (isCurrent) Modifier.border(2.dp, color, RoundedCornerShape(8.dp))
+                                    if (isCurrent) Modifier.border(2.dp, color, RoundedCornerShape(10.dp))
                                     else Modifier
                                 )
                         ) {
-                            Text(grade, fontWeight = FontWeight.Bold, color = color, fontSize = 16.sp)
+                            Text(
+                                grade,
+                                fontWeight = FontWeight.Bold,
+                                color = color,
+                                fontSize = 16.sp
+                            )
                         }
+                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             if (threshold == Int.MIN_VALUE) "< 0" else "$threshold+",
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
@@ -236,11 +293,11 @@ private fun GradeScale(currentScore: Int) {
 @Composable
 private fun RuleRow(icon: ImageVector, iconColor: Color, title: String, subtitle: String) {
     Row(
-        modifier = Modifier.padding(horizontal = 0.dp, vertical = 10.dp),
+        modifier = Modifier.padding(vertical = 8.dp),
         verticalAlignment = Alignment.Top
     ) {
-        Icon(icon, contentDescription = null, tint = iconColor, modifier = Modifier.size(28.dp))
-        Spacer(modifier = Modifier.width(14.dp))
+        Icon(icon, contentDescription = null, tint = iconColor, modifier = Modifier.size(24.dp))
+        Spacer(modifier = Modifier.width(12.dp))
         Column {
             Text(title, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold))
             Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -250,25 +307,39 @@ private fun RuleRow(icon: ImageVector, iconColor: Color, title: String, subtitle
 
 @Composable
 private fun PenaltyStep(step: String, text: String) {
-    Row(modifier = Modifier.padding(vertical = 5.dp)) {
+    Row {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .size(20.dp)
+                .size(22.dp)
                 .clip(CircleShape)
                 .background(Color.Red)
         ) {
             Text(step, style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold), color = Color.White)
         }
         Spacer(modifier = Modifier.width(12.dp))
-        Text(text, style = MaterialTheme.typography.bodyMedium)
+        Text(
+            text,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
 @Composable
 private fun MiniStat(value: String, label: String, color: Color, modifier: Modifier = Modifier) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(value, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = color)
-        Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+        Text(
+            value,
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+            color = color
+        )
+        Spacer(modifier = Modifier.height(2.dp))
+        Text(
+            label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
     }
 }
